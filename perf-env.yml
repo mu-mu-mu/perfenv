@@ -1,0 +1,39 @@
+---
+- name: Setup environment and compile Linux Kernel
+  hosts: localhost
+  connection: local
+  become: no
+  vars:
+    _src_dst: "~/src/{{ ansible_facts['architecture'] }}/"
+    _bin_dst: "~/bin/{{ ansible_facts['architecture'] }}/"
+
+  tasks:
+    - name: Set a fact
+      set_fact:
+        src_dst: "{{ _src_dst | expanduser }}"
+        bin_dst: "{{ _bin_dst | expanduser }}"
+
+    - name: Creates directory
+      file:
+        path: "{{ item }}"
+        state: directory
+      loop:
+        - "~/src"
+        - "~/projects"
+        - "~/bin"
+        - "{{ src_dst }}"
+        - "~/projects/{{ ansible_facts['architecture'] }}"
+        - "{{ bin_dst }}"
+
+    - include_tasks: tasks/kernel_packages.yml
+      vars:
+        clone_destination: "{{ src_dst }}"
+
+    - include_tasks: tasks/phoronix.yml
+      vars:
+        clone_destination: "{{ src_dst }}"
+
+    - include_tasks: tasks/scheduler.yml
+      vars:
+        clone_destination: "{{ src_dst }}"
+        bin_location: "{{ bin_dst }}"

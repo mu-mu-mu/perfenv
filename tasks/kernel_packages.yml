@@ -1,0 +1,37 @@
+---
+- name: Update all packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Cache validity in seconds
+  become: yes
+
+- name: Install necessary packages for kernel compilation
+  apt:
+    name:
+      - build-essential
+      - gcc
+      - make
+      - bc
+      - libncurses-dev
+      - bison
+      - flex
+      - libssl-dev
+      - libelf-dev
+      - gawk
+      - openssl
+      - dkms
+      - libudev-dev
+      - libpci-dev
+      - libiberty-dev
+      - autoconf
+      - git
+      - liblz4-tool
+    state: latest
+  become: yes
+
+- name: Clone Linux kernel source
+  git:
+    repo: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git"
+    dest: "{{ clone_destination }}/linux"
+    clone: yes
+    update: yes

@@ -1,0 +1,29 @@
+---
+- name: Update all packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Cache validity in seconds
+  become: yes
+
+- name: Install the package
+  apt:
+    name:
+      - php-cli
+      - php-xml
+      - unzip
+      - wget
+      - git
+    state: present
+  become: yes
+
+- name: Clone Phoronix Test Suite repository
+  git:
+    repo: 'https://github.com/phoronix-test-suite/phoronix-test-suite.git'
+    dest: "{{ clone_destination }}/phoronix"
+    version: master
+
+- name: Install Phoronix Test Suite
+  shell: |
+    cd "{{ clone_destination }}/phoronix"
+    ./install-sh
+  become: yes
