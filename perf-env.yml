@@ -37,3 +37,7 @@
       vars:
         clone_destination: "{{ src_dst }}"
         bin_location: "{{ bin_dst }}"
+
+    - include_tasks: tasks/arch.yml
+      vars:
+        bin_location: "{{ bin_dst }}"

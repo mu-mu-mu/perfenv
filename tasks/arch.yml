@@ -1,0 +1,20 @@
+---
+- name: Update all packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Cache validity in seconds
+  become: yes
+
+- name: Install the package
+  become: yes
+  apt:
+    name:
+      - cpufrequtils
+    state: present
+  when: ansible_facts['architecture'] == 'x86_64'
+
+- name: Copy file (x86_64)
+  copy:
+    src: arch/x86_64/hw_stabilizer.sh
+    dest: "{{ bin_location }}"
+  when: ansible_facts['architecture'] == 'x86_64'
