@@ -41,3 +41,7 @@
     - include_tasks: tasks/arch.yml
       vars:
         bin_location: "{{ bin_dst }}"
+
+    - include_tasks: tasks/cpubench.yml
+      vars:
+        clone_destination: "{{ src_dst }}"

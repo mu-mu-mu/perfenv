@@ -1,0 +1,38 @@
+---
+- name: Update all packages
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600  # Cache validity in seconds
+  become: yes
+
+- name: Install necessary packages
+  apt:
+    name:
+      - libopenmpi-dev
+      - mpich
+      - gfortran
+    state: latest
+  become: yes
+
+- name: Download NAS Parallel Benchmarks source code
+  get_url:
+    url: "https://www.nas.nasa.gov/assets/npb/NPB3.4.3.tar.gz"
+    dest: "/tmp/NPB3.4.3.tar.gz"
+
+- name: Extract NAS Parallel Benchmarks source code
+  unarchive:
+    src: "/tmp/NPB3.4.3.tar.gz"
+    dest: "{{ clone_destination }}/"
+    remote_src: yes
+
+- name: Copy file
+  copy:
+    src: config/naspar.make.def
+    dest: "{{ clone_destination }}/NPB3.4/NPB3.4-OMP/config/make.def"
+    force: no
+
+- name: Copy file
+  copy:
+    src: config/naspar.make.def
+    dest: "{{ clone_destination }}/NPB3.4/NPB3.4-OMP/config/make.def"
+    force: no
