@@ -1,0 +1,40 @@
+---
+- name: Install prerequisite packages
+  apt:
+    name:
+      - memcached
+      - libmemcached-tools
+      - lsb-release
+      - curl
+      - curl
+      - gpg
+      - autoconf
+      - automake
+      - libpcre3-dev
+      - libevent-dev
+      - pkg-config
+      - zlib1g-dev
+      - libssl-dev
+    state: present
+  become: yes
+
+- name: Clone source
+  git:
+    repo: "https://github.com/RedisLabs/memtier_benchmark.git"
+    dest: "{{ clone_destination }}/memtier_benchmark"
+    clone: yes
+    update: yes
+    version: "tags/2.1.0"
+
+- name: make
+  shell: |
+    cd "{{ clone_destination }}/memtier_benchmark"
+    autoreconf -ivf
+    ./configure
+    make
+
+- name: make install
+  shell: |
+    cd "{{ clone_destination }}/memtier_benchmark"
+    make install
+  become: yes

@@ -45,3 +45,8 @@
     - include_tasks: tasks/cpubench.yml
       vars:
         clone_destination: "{{ src_dst }}"
+
+    - include_tasks: tasks/memcached.yml
+      vars:
+        clone_destination: "{{ src_dst }}"
+        bin_location: "{{ bin_dst }}"
