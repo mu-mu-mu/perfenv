@@ -11,6 +11,7 @@
       - libopenmpi-dev
       - mpich
       - gfortran
+      - stress-ng
     state: latest
   become: yes
 
