@@ -1,0 +1,52 @@
+---
+- name: Set a variable in task1
+  set_fact:
+    mysql_root_password: "secure_password"
+    mysql_db: sysbench
+    mysql_user: sysbench
+    mysql_user_password: "password"
+
+- name: Update and upgrade apt packages
+  apt:
+    update_cache: yes
+    upgrade: yes
+  become: yes
+
+- name: Install MySQL Server
+  apt:
+    name:
+      - mysql-server
+      - python3-mysqldb
+      - sysbench
+    state: present
+  become: yes
+
+- name: Change authentication method for MySQL root user
+  ansible.builtin.mysql_user:
+    login_user: root
+    login_unix_socket: /var/run/mysqld/mysqld.sock
+    name: root
+    host: localhost
+    password: "{{ mysql_root_password }}"
+    priv: '*.*:ALL,GRANT'
+    state: present
+    append_privs: yes
+    check_implicit_admin: true
+    login_password: "{{ mysql_root_password }}"
+  become: yes
+
+- name: Create a database for Sysbench
+  ansible.builtin.mysql_db:
+    name: "{{ mysql_db }}"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+
+- name: Create a MySQL user for Sysbench
+  ansible.builtin.mysql_user:
+    name: "{{ mysql_user }}"
+    password: "{{ mysql_user_password }}"
+    priv: "{{ mysql_db }}.*:ALL"
+    state: present
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
